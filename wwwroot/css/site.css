@@ -1,0 +1,517 @@
+/* ILLIYEEN - Premium Bengali Fashion E-Commerce Styles */
+
+:root {
+    --gold-color: #d4af37;
+    --gold-light: #f4e6b1;
+    --gold-dark: #b8941f;
+    --dark-bg: #1a1a1a;
+    --dark-secondary: #2c2c2c;
+    --light-bg: #f8f9fa;
+    --text-muted: #6c757d;
+    --white: #ffffff;
+    --success: #28a745;
+    --danger: #dc3545;
+    --warning: #ffc107;
+    --info: #17a2b8;
+}
+
+/* Base Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: var(--white);
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.display-1, .display-2, .display-3, .display-4, .display-5, .display-6 {
+    font-weight: 700;
+}
+
+/* Color Classes */
+.text-gold {
+    color: var(--gold-color) !important;
+}
+
+.bg-gold {
+    background-color: var(--gold-color) !important;
+    color: var(--dark-bg) !important;
+}
+
+.border-gold {
+    border-color: var(--gold-color) !important;
+}
+
+/* Buttons */
+.btn-gold {
+    background-color: var(--gold-color);
+    border-color: var(--gold-color);
+    color: var(--dark-bg);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-gold:hover {
+    background-color: var(--gold-dark);
+    border-color: var(--gold-dark);
+    color: var(--dark-bg);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.btn-outline-gold {
+    border-color: var(--gold-color);
+    color: var(--gold-color);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-gold:hover {
+    background-color: var(--gold-color);
+    border-color: var(--gold-color);
+    color: var(--dark-bg);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+/* Navigation */
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: var(--gold-color);
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, var(--dark-bg) 0%, var(--dark-secondary) 100%);
+    min-height: 70vh;
+}
+
+.bg-gradient {
+    background: linear-gradient(135deg, var(--dark-bg) 0%, var(--dark-secondary) 100%);
+}
+
+.min-vh-75 {
+    min-height: 75vh;
+}
+
+/* Cards */
+.card {
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    border-radius: 12px 12px 0 0 !important;
+    font-weight: 600;
+}
+
+/* Product Cards */
+.product-card {
+    overflow: hidden;
+    position: relative;
+}
+
+.product-card .product-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.product-card .product-image img {
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.05);
+}
+
+.product-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(26, 26, 26, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.product-card:hover .product-overlay {
+    opacity: 1;
+}
+
+/* Category Cards */
+.category-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.category-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.category-icon {
+    transition: transform 0.3s ease;
+}
+
+.category-card:hover .category-icon {
+    transform: scale(1.1);
+}
+
+/* Forms */
+.form-control:focus {
+    border-color: var(--gold-color);
+    box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+}
+
+.form-select:focus {
+    border-color: var(--gold-color);
+    box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+}
+
+/* Rating Stars */
+.rating .fa-star {
+    font-size: 0.9rem;
+}
+
+/* Badges */
+.badge {
+    font-weight: 500;
+}
+
+/* Pagination */
+.pagination .page-link {
+    color: var(--gold-color);
+    border-color: var(--gold-color);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--gold-color);
+    border-color: var(--gold-color);
+    color: var(--dark-bg);
+}
+
+.pagination .page-link:hover {
+    background-color: var(--gold-light);
+    border-color: var(--gold-color);
+    color: var(--dark-bg);
+}
+
+/* Breadcrumb */
+.breadcrumb-item + .breadcrumb-item::before {
+    color: var(--gold-color);
+}
+
+.breadcrumb-item a {
+    color: var(--gold-color);
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+footer {
+    background-color: var(--dark-bg) !important;
+}
+
+footer .social-links a {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+footer .social-links a:hover {
+    background-color: var(--gold-color);
+    color: var(--dark-bg) !important;
+    transform: translateY(-3px);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Loading Spinner */
+.spinner-gold {
+    color: var(--gold-color);
+}
+
+/* Feature Icons */
+.feature-item {
+    padding: 2rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    transition: transform 0.3s ease;
+}
+
+.feature-item:hover .feature-icon {
+    transform: scale(1.1);
+}
+
+/* Cart Badge */
+.badge.rounded-pill {
+    font-size: 0.7rem;
+    padding: 0.25em 0.5em;
+}
+
+/* Dropdown Menus */
+.dropdown-menu {
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.dropdown-item:hover {
+    background-color: var(--gold-light);
+    color: var(--dark-bg);
+}
+
+/* List Groups */
+.list-group-item.active {
+    background-color: var(--gold-color);
+    border-color: var(--gold-color);
+    color: var(--dark-bg);
+}
+
+.list-group-item:hover {
+    background-color: var(--gold-light);
+}
+
+/* Alert Styles */
+.alert-info {
+    background-color: rgba(212, 175, 55, 0.1);
+    border-color: var(--gold-color);
+    color: var(--dark-bg);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: 50vh;
+    }
+    
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .feature-item {
+        padding: 1rem;
+    }
+    
+    .product-card {
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .btn-lg {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gold-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--gold-dark);
+}
+
+/* Selection */
+::selection {
+    background-color: var(--gold-color);
+    color: var(--dark-bg);
+}
+
+::-moz-selection {
+    background-color: var(--gold-color);
+    color: var(--dark-bg);
+}
+
+/* Focus Styles */
+.btn:focus,
+.form-control:focus,
+.form-select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+}
+
+/* Accordion */
+.accordion-button:not(.collapsed) {
+    background-color: var(--gold-light);
+    color: var(--dark-bg);
+}
+
+.accordion-button:focus {
+    box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+    border-color: var(--gold-color);
+}
+
+/* Tables */
+.table-hover tbody tr:hover {
+    background-color: rgba(212, 175, 55, 0.1);
+}
+
+/* Progress Bars */
+.progress-bar {
+    background-color: var(--gold-color);
+}
+
+/* Timeline */
+.timeline {
+    position: relative;
+    padding: 1rem 0;
+}
+
+.timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-left: 3rem;
+    position: relative;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 1rem;
+    top: 0;
+    bottom: -1.5rem;
+    width: 2px;
+    background-color: #e9ecef;
+}
+
+.timeline-item:last-child::before {
+    display: none;
+}
+
+.timeline-item i {
+    position: absolute;
+    left: 0.5rem;
+    width: 2rem;
+    height: 2rem;
+    background-color: var(--white);
+    border: 2px solid #e9ecef;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.timeline-item.active i {
+    background-color: var(--gold-color);
+    border-color: var(--gold-color);
+    color: var(--dark-bg);
+}
+
+.timeline-item.completed i {
+    background-color: var(--success);
+    border-color: var(--success);
+    color: var(--white);
+}
+
+/* Utility Classes */
+.text-shadow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.box-shadow {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.border-radius-lg {
+    border-radius: 12px;
+}
+
+.z-index-high {
+    z-index: 1050;
+}
+
+/* Print Styles */
+@media print {
+    .navbar,
+    .footer,
+    .btn,
+    .pagination {
+        display: none !important;
+    }
+    
+    body {
+        color: black !important;
+        background: white !important;
+    }
+}

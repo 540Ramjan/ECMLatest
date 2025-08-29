@@ -1,0 +1,224 @@
+@model Illiyeen.Models.Order
+@{
+    ViewData["Title"] = "Order Confirmation";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Success Message -->
+            <div class="text-center mb-5">
+                <div class="success-icon mb-3">
+                    <i class="fas fa-check-circle fa-4x text-success"></i>
+                </div>
+                <h2 class="fw-bold text-success mb-3">Order Placed Successfully!</h2>
+                <p class="text-muted">Thank you for your order. We'll send you an email confirmation shortly.</p>
+            </div>
+
+            <!-- Order Details -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-dark text-gold">
+                    <h5 class="mb-0">
+                        <i class="fas fa-receipt me-2"></i>Order Details
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold">Order Information</h6>
+                            <p class="mb-1"><strong>Order ID:</strong> #@Model.Id.ToString("D6")</p>
+                            <p class="mb-1"><strong>Order Date:</strong> @Model.CreatedAt.ToString("dd MMM yyyy, hh:mm tt")</p>
+                            <p class="mb-1"><strong>Status:</strong> <span class="badge bg-primary">@Model.Status</span></p>
+                            <p class="mb-1"><strong>Payment Method:</strong> @Model.PaymentMethod</p>
+                            <p class="mb-0"><strong>Payment Status:</strong> <span class="badge bg-@(Model.PaymentStatus == "Paid" ? "success" : "warning")">@Model.PaymentStatus</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-bold">Shipping Information</h6>
+                            <p class="mb-1"><strong>Address:</strong></p>
+                            <p class="mb-1">@Model.ShippingAddress</p>
+                            <p class="mb-1">@Model.ShippingCity, @Model.ShippingPostalCode</p>
+                            <p class="mb-0"><strong>Phone:</strong> @Model.PhoneNumber</p>
+                        </div>
+                    </div>
+
+                    <!-- Order Items -->
+                    <div class="order-items">
+                        <h6 class="fw-bold mb-3">Order Items</h6>
+                        <div class="table-responsive">
+                            <table class="table table-borderless">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th class="text-end">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.OrderItems)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="@(item.Product.ImageUrl ?? "https://via.placeholder.com/50x50/d4af37/000000?text=" + Uri.EscapeDataString(item.Product.Name))" 
+                                                         class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;" alt="@item.Product.Name">
+                                                    <div>
+                                                        <h6 class="mb-0">@item.Product.Name</h6>
+                                                        <small class="text-muted">@item.Product.Category.Name</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>৳@item.Price.ToString("N0")</td>
+                                            <td>@item.Quantity</td>
+                                            <td class="text-end">৳@item.TotalPrice.ToString("N0")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot class="border-top">
+                                    <tr>
+                                        <td colspan="3" class="text-end fw-bold">Total Amount:</td>
+                                        <td class="text-end fw-bold text-gold h5">৳@Model.TotalAmount.ToString("N0")</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Notes))
+                    {
+                        <div class="order-notes mt-4">
+                            <h6 class="fw-bold">Order Notes</h6>
+                            <p class="text-muted">@Model.Notes</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Payment Instructions -->
+            @if (Model.PaymentMethod != "Cash on Delivery" && Model.PaymentStatus == "Pending")
+            {
+                <div class="card border-0 shadow-sm mt-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h6 class="mb-0">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Payment Instructions
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-3">Please complete your payment to confirm your order:</p>
+                        <div class="d-flex gap-2">
+                            @if (Model.PaymentMethod == "bKash")
+                            {
+                                <button class="btn btn-warning" onclick="initiatebKashPayment(@Model.Id)">
+                                    <i class="fas fa-mobile-alt me-2"></i>Pay with bKash
+                                </button>
+                            }
+                            @if (Model.PaymentMethod == "Nagad")
+                            {
+                                <button class="btn btn-danger" onclick="initiateNagadPayment(@Model.Id)">
+                                    <i class="fas fa-mobile-alt me-2"></i>Pay with Nagad
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Next Steps -->
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">What happens next?</h6>
+                    <div class="timeline">
+                        <div class="timeline-item @(Model.Status == "Pending" ? "active" : "completed")">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <strong>Order Confirmation</strong>
+                                <small class="text-muted d-block">We've received your order and will process it shortly</small>
+                            </div>
+                        </div>
+                        <div class="timeline-item @(Model.Status == "Processing" ? "active" : "")">
+                            <i class="fas fa-cog"></i>
+                            <div>
+                                <strong>Processing</strong>
+                                <small class="text-muted d-block">We're preparing your items for shipment</small>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <i class="fas fa-shipping-fast"></i>
+                            <div>
+                                <strong>Shipped</strong>
+                                <small class="text-muted d-block">Your order is on its way to you</small>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <i class="fas fa-check"></i>
+                            <div>
+                                <strong>Delivered</strong>
+                                <small class="text-muted d-block">Your order has been delivered</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="text-center mt-4">
+                <a href="@Url.Action("Index", "Product")" class="btn btn-gold me-3">
+                    <i class="fas fa-shopping-bag me-2"></i>Continue Shopping
+                </a>
+                <a href="@Url.Action("Index", "Home")" class="btn btn-outline-gold">
+                    <i class="fas fa-home me-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function initiatebKashPayment(orderId) {
+            fetch('/payment/initiatebkashpayment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                },
+                body: JSON.stringify({ orderId: orderId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = data.redirectUrl;
+                } else {
+                    alert('Payment initiation failed: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while initiating payment');
+            });
+        }
+
+        function initiateNagadPayment(orderId) {
+            fetch('/payment/initiatenagadpayment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                },
+                body: JSON.stringify({ orderId: orderId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = data.redirectUrl;
+                } else {
+                    alert('Payment initiation failed: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while initiating payment');
+            });
+        }
+    </script>
+}

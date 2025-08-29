@@ -1,0 +1,203 @@
+@model Illiyeen.Models.ViewModels.ProductListViewModel
+@{
+    ViewData["Title"] = "Products";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-dark text-gold">
+                    <h6 class="mb-0"><i class="fas fa-filter me-2"></i>Filter Products</h6>
+                </div>
+                <div class="card-body">
+                    <!-- Search -->
+                    <form method="get" class="mb-4">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="search" value="@Model.SearchQuery" placeholder="Search products...">
+                            <button class="btn btn-outline-gold" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Categories -->
+                    <h6 class="fw-bold mb-3">Categories</h6>
+                    <div class="list-group list-group-flush mb-4">
+                        <a href="@Url.Action("Index", "Product")" 
+                           class="list-group-item list-group-item-action border-0 @(Model.SelectedCategory == null ? "active" : "")">
+                            All Products
+                        </a>
+                        @foreach (var category in Model.Categories)
+                        {
+                            <a href="@Url.Action("Index", "Product", new { categoryId = category.Id })" 
+                               class="list-group-item list-group-item-action border-0 @(Model.SelectedCategory?.Id == category.Id ? "active" : "")">
+                                @category.Name
+                            </a>
+                        }
+                    </div>
+
+                    <!-- Sort -->
+                    <h6 class="fw-bold mb-3">Sort By</h6>
+                   @*  <form method="get" id="sortForm">
+                        <input type="hidden" name="search" value="@Model.SearchQuery">
+                        @if (Model.SelectedCategory != null)
+                        {
+                            <input type="hidden" name="categoryId" value="@Model.SelectedCategory.Id">
+                        }
+                        <select class="form-select" name="sortBy" onchange="document.getElementById('sortForm').submit()">
+                            <option value="">Default</option>
+                            <option value="name" @(Model.SortBy == "name" ? "selected" : "")>Name (A-Z)</option>
+                            <option value="price_asc" @(Model.SortBy == "price_asc" ? "selected" : "")>Price (Low to High)</option>
+                            <option value="price_desc" @(Model.SortBy == "price_desc" ? "selected" : "")>Price (High to Low)</option>
+                            <option value="newest" @(Model.SortBy == "newest" ? "selected" : "")>Newest First</option>
+                        </select>
+                    </form> *@
+                </div>
+            </div>
+        </div>
+
+        <!-- Products -->
+        <div class="col-lg-9">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold mb-0">
+                        @if (Model.SelectedCategory != null)
+                        {
+                            @Model.SelectedCategory.Name
+                        }
+                        else
+                        {
+                            @("All Products")
+                        }
+                    </h2>
+                    <p class="text-muted mb-0">@Model.TotalProducts products found</p>
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            @if (Model.Products.Any())
+            {
+                <div class="row g-4">
+                    @foreach (var product in Model.Products)
+                    {
+                        <div class="col-lg-4 col-md-6">
+                            <div class="product-card card border-0 shadow-sm h-100">
+                                <div class="product-image position-relative">
+                                    <img src="@(product.ImageUrl ?? "https://via.placeholder.com/300x300/d4af37/000000?text=" + Uri.EscapeDataString(product.Name))" 
+                                         class="card-img-top" alt="@product.Name" style="height: 250px; object-fit: cover;">
+                                    <div class="product-overlay">
+                                        <a href="@Url.Action("Details", "Product", new { id = product.Id })" 
+                                           class="btn btn-gold btn-sm">
+                                            <i class="fas fa-eye me-1"></i>View Details
+                                        </a>
+                                    </div>
+                                    @if (!product.InStock)
+                                    {
+                                        <div class="position-absolute top-0 end-0 m-2">
+                                            <span class="badge bg-danger">Out of Stock</span>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title fw-bold">@product.Name</h6>
+                                    <p class="text-muted small">@product.Category.Name</p>
+                                    <p class="card-text text-muted small">
+                                        @(product.Description.Length > 80 ? product.Description.Substring(0, 80) + "..." : product.Description)
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="h5 text-gold fw-bold mb-0">৳@product.Price.ToString("N0")</span>
+                                        @if (product.ReviewCount > 0)
+                                        {
+                                            <div class="rating">
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    <i class="fas fa-star @(i <= product.AverageRating ? "text-warning" : "text-muted")"></i>
+                                                }
+                                                <span class="text-muted ms-1">(@product.ReviewCount)</span>
+                                            </div>
+                                        }
+                                    </div>
+                                    @if (User.Identity?.IsAuthenticated == true && product.InStock)
+                                    {
+                                        <button class="btn btn-outline-gold btn-sm w-100 add-to-cart-btn" 
+                                                data-product-id="@product.Id">
+                                            <i class="fas fa-shopping-cart me-1"></i>Add to Cart
+                                        </button>
+                                    }
+                                    else if (!User.Identity?.IsAuthenticated == true)
+                                    {
+                                        <a href="@Url.Action("Login", "Account")" class="btn btn-outline-gold btn-sm w-100">
+                                            Login to Purchase
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Pagination -->
+                @if (Model.TotalPages > 1)
+                {
+                    <nav aria-label="Product pagination" class="mt-5">
+                        <ul class="pagination justify-content-center">
+                            @if (Model.CurrentPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Index", new { 
+                                        page = Model.CurrentPage - 1, 
+                                        search = Model.SearchQuery, 
+                                        categoryId = Model.SelectedCategory?.Id,
+                                        sortBy = Model.SortBy 
+                                    })">Previous</a>
+                                </li>
+                            }
+                            
+                            @for (int i = Math.Max(1, Model.CurrentPage - 2); i <= Math.Min(Model.TotalPages, Model.CurrentPage + 2); i++)
+                            {
+                                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("Index", new { 
+                                        page = i, 
+                                        search = Model.SearchQuery, 
+                                        categoryId = Model.SelectedCategory?.Id,
+                                        sortBy = Model.SortBy 
+                                    })">@i</a>
+                                </li>
+                            }
+                            
+                            @if (Model.CurrentPage < Model.TotalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Index", new { 
+                                        page = Model.CurrentPage + 1, 
+                                        search = Model.SearchQuery, 
+                                        categoryId = Model.SelectedCategory?.Id,
+                                        sortBy = Model.SortBy 
+                                    })">Next</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                }
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-search fa-4x text-muted mb-3"></i>
+                    <h4>No products found</h4>
+                    <p class="text-muted">Try adjusting your search or filter criteria.</p>
+                    <a href="@Url.Action("Index", "Product")" class="btn btn-gold">
+                        View All Products
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/cart.js"></script>
+}

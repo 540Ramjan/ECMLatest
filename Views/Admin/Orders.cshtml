@@ -1,0 +1,284 @@
+@model IEnumerable<Illiyeen.Models.Order>
+@{
+    ViewData["Title"] = "Manage Orders";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="dashboard-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="fw-bold">Orders</h1>
+            <p class="text-muted">Manage customer orders and track deliveries</p>
+        </div>
+        <div class="d-flex gap-2">
+            <select class="form-select" id="statusFilter">
+                <option value="">All Orders</option>
+                <option value="Pending">Pending</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Processing">Processing</option>
+                <option value="Shipped">Shipped</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+            <input type="text" class="form-control" placeholder="Search orders..." id="searchInput">
+        </div>
+    </div>
+</div>
+
+<!-- Orders Summary Cards -->
+<div class="row mb-4">
+    <div class="col-lg-2 col-md-4 col-sm-6">
+        <div class="card bg-warning text-white">
+            <div class="card-body text-center">
+                <div class="h3">@Model.Count(o => o.Status == "Pending")</div>
+                <div>Pending</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-6">
+        <div class="card bg-info text-white">
+            <div class="card-body text-center">
+                <div class="h3">@Model.Count(o => o.Status == "Confirmed")</div>
+                <div>Confirmed</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-6">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center">
+                <div class="h3">@Model.Count(o => o.Status == "Processing")</div>
+                <div>Processing</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-6">
+        <div class="card bg-secondary text-white">
+            <div class="card-body text-center">
+                <div class="h3">@Model.Count(o => o.Status == "Shipped")</div>
+                <div>Shipped</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-6">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <div class="h3">@Model.Count(o => o.Status == "Delivered")</div>
+                <div>Delivered</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-6">
+        <div class="card bg-danger text-white">
+            <div class="card-body text-center">
+                <div class="h3">@Model.Count(o => o.Status == "Cancelled")</div>
+                <div>Cancelled</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Orders Table -->
+<div class="card shadow">
+    <div class="card-header bg-dark text-gold">
+        <h5 class="mb-0">
+            <i class="fas fa-shopping-cart me-2"></i>Order List
+        </h5>
+    </div>
+    <div class="card-body p-0">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="ordersTable">
+                    <thead class="bg-light">
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Items</th>
+                            <th>Amount</th>
+                            <th>Payment</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model)
+                        {
+                            <tr data-order-id="@order.Id" data-status="@order.Status">
+                                <td>
+                                    <strong>#@order.Id.ToString("D6")</strong>
+                                    @if (!string.IsNullOrEmpty(order.TransactionId))
+                                    {
+                                        <small class="text-muted d-block">TXN: @order.TransactionId</small>
+                                    }
+                                </td>
+                                <td>
+                                    <div>
+                                        <strong>@order.User.FullName</strong>
+                                        <small class="text-muted d-block">@order.User.Email</small>
+                                        <small class="text-muted d-block">@order.PhoneNumber</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">@order.OrderItems.Count items</span>
+                                    <small class="text-muted d-block">@order.OrderItems.Sum(i => i.Quantity) units</small>
+                                </td>
+                                <td>
+                                    <strong class="text-gold">৳@order.TotalAmount.ToString("N0")</strong>
+                                </td>
+                                <td>
+                                    <div>
+                                        <span class="badge bg-info">@order.PaymentMethod</span>
+                                        <span class="badge bg-@(order.PaymentStatus == "Paid" ? "success" : order.PaymentStatus == "Failed" ? "danger" : "warning") d-block mt-1">
+                                            @order.PaymentStatus
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-@GetStatusColor(order.Status)">@order.Status</span>
+                                </td>
+                                <td>
+                                    @order.CreatedAt.ToString("MMM dd, yyyy")
+                                    <small class="text-muted d-block">@order.CreatedAt.ToString("hh:mm tt")</small>
+                                </td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                            Actions
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#" onclick="viewOrderDetails(@order.Id)">View Details</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item" href="#" onclick="updateOrderStatus(@order.Id, 'Confirmed')">Mark as Confirmed</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="updateOrderStatus(@order.Id, 'Processing')">Mark as Processing</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="updateOrderStatus(@order.Id, 'Shipped')">Mark as Shipped</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="updateOrderStatus(@order.Id, 'Delivered')">Mark as Delivered</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item text-danger" href="#" onclick="updateOrderStatus(@order.Id, 'Cancelled')">Cancel Order</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
+                <h4>No orders found</h4>
+                <p class="text-muted">Orders will appear here when customers start purchasing.</p>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Order Details Modal -->
+<div class="modal fade" id="orderDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-gold">
+                <h5 class="modal-title">Order Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="orderDetailsContent">
+                <!-- Order details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetStatusColor(string status)
+    {
+        return status switch
+        {
+            "Pending" => "warning",
+            "Confirmed" => "info",
+            "Processing" => "primary",
+            "Shipped" => "secondary",
+            "Delivered" => "success",
+            "Cancelled" => "danger",
+            _ => "secondary"
+        };
+    }
+}
+
+@section Scripts {
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            const filter = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#ordersTable tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(filter) ? '' : 'none';
+            });
+        });
+
+        // Status filter functionality
+        document.getElementById('statusFilter').addEventListener('change', function() {
+            const filter = this.value;
+            const rows = document.querySelectorAll('#ordersTable tbody tr');
+            
+            rows.forEach(row => {
+                const status = row.getAttribute('data-status');
+                row.style.display = !filter || status === filter ? '' : 'none';
+            });
+        });
+
+        function updateOrderStatus(orderId, status) {
+            if (!confirm(`Are you sure you want to change order status to ${status}?`)) {
+                return;
+            }
+
+            fetch('/admin/updateorderstatus', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                },
+                body: JSON.stringify({
+                    orderId: orderId,
+                    status: status
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Failed to update order status');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred');
+            });
+        }
+
+        function viewOrderDetails(orderId) {
+            // Implementation to load order details
+            document.getElementById('orderDetailsContent').innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+            const modal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
+            modal.show();
+            
+            // Here you would fetch order details via AJAX
+            // For now, showing a placeholder
+            setTimeout(() => {
+                document.getElementById('orderDetailsContent').innerHTML = `
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Order details functionality will be implemented here.
+                    </div>
+                `;
+            }, 1000);
+        }
+    </script>
+}

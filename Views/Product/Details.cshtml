@@ -1,0 +1,331 @@
+@model Illiyeen.Models.ViewModels.ProductViewModel
+@{
+    ViewData["Title"] = Model.Product.Name;
+}
+
+<div class="container my-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Product")">Products</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("Category", "Product", new { slug = Model.Product.Category.Slug })">@Model.Product.Category.Name</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Product.Name</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Product Images -->
+        <div class="col-lg-6">
+            <div class="product-image-container">
+                <img src="@(Model.Product.ImageUrl ?? "https://via.placeholder.com/600x600/d4af37/000000?text=" + Uri.EscapeDataString(Model.Product.Name))" 
+                     class="img-fluid rounded shadow" alt="@Model.Product.Name" id="mainProductImage">
+            </div>
+        </div>
+
+        <!-- Product Details -->
+        <div class="col-lg-6">
+            <div class="product-details">
+                <h1 class="fw-bold mb-3">@Model.Product.Name</h1>
+                
+                <!-- Rating -->
+                @if (Model.Product.ReviewCount > 0)
+                {
+                    <div class="rating mb-3">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <i class="fas fa-star @(i <= Model.Product.AverageRating ? "text-warning" : "text-muted")"></i>
+                        }
+                        <span class="ms-2 text-muted">(@Model.Product.ReviewCount reviews)</span>
+                    </div>
+                }
+
+                <!-- Price -->
+                <div class="price mb-4">
+                    <span class="h2 text-gold fw-bold">৳@Model.Product.Price.ToString("N0")</span>
+                </div>
+
+                <!-- Product Info -->
+                <div class="product-info mb-4">
+                    <p class="text-muted mb-3">Category: <strong>@Model.Product.Category.Name</strong></p>
+                    
+                    @if (!string.IsNullOrEmpty(Model.Product.Brand))
+                    {
+                        <p class="text-muted mb-1">Brand: <strong>@Model.Product.Brand</strong></p>
+                    }
+                    
+                    @if (!string.IsNullOrEmpty(Model.Product.Size))
+                    {
+                        <p class="text-muted mb-1">Size: <strong>@Model.Product.Size</strong></p>
+                    }
+                    
+                    @if (!string.IsNullOrEmpty(Model.Product.Color))
+                    {
+                        <p class="text-muted mb-1">Color: <strong>@Model.Product.Color</strong></p>
+                    }
+                    
+                    @if (!string.IsNullOrEmpty(Model.Product.Material))
+                    {
+                        <p class="text-muted mb-1">Material: <strong>@Model.Product.Material</strong></p>
+                    }
+                    
+                    <p class="text-muted">
+                        Stock: 
+                        @if (Model.Product.InStock)
+                        {
+                            <span class="text-success fw-bold">@Model.Product.Stock units available</span>
+                        }
+                        else
+                        {
+                            <span class="text-danger fw-bold">Out of Stock</span>
+                        }
+                    </p>
+                </div>
+
+                <!-- Description -->
+                <div class="description mb-4">
+                    <h6 class="fw-bold">Description</h6>
+                    <p>@Model.Product.Description</p>
+                    
+                    @if (!string.IsNullOrEmpty(Model.Product.Features))
+                    {
+                        <h6 class="fw-bold mt-3">Features</h6>
+                        <p>@Model.Product.Features</p>
+                    }
+                </div>
+
+                <!-- Add to Cart -->
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    @if (Model.Product.InStock)
+                    {
+                        <div class="add-to-cart-section mb-4">
+                            <div class="row align-items-center">
+                                <div class="col-md-4">
+                                    <div class="quantity-selector">
+                                        <label class="form-label">Quantity</label>
+                                        <div class="input-group">
+                                            <button class="btn btn-outline-secondary" type="button" onclick="decreaseQuantity()">-</button>
+                                            <input type="number" id="productQuantity" class="form-control text-center" value="1" min="1" max="@Model.Product.Stock">
+                                            <button class="btn btn-outline-secondary" type="button" onclick="increaseQuantity()">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <button class="btn btn-gold btn-lg w-100 add-to-cart-btn" data-product-id="@Model.Product.Id">
+                                        <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>This product is currently out of stock.
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <p class="mb-2">Please <a href="@Url.Action("Login", "Account")" class="alert-link">login</a> to purchase this product.</p>
+                        <a href="@Url.Action("Login", "Account")" class="btn btn-gold">Login to Purchase</a>
+                    </div>
+                }
+
+                <!-- Social Share -->
+                <div class="social-share mt-4">
+                    <h6 class="fw-bold">Share this product</h6>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="btn btn-outline-primary btn-sm">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-info btn-sm">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-danger btn-sm">
+                            <i class="fab fa-pinterest"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-success btn-sm">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Tabs -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <ul class="nav nav-tabs" id="productTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">
+                        Reviews (@Model.Product.ReviewCount)
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab">
+                        Additional Details
+                    </button>
+                </li>
+            </ul>
+            <div class="tab-content" id="productTabsContent">
+                <!-- Reviews Tab -->
+                <div class="tab-pane fade show active" id="reviews" role="tabpanel">
+                    <div class="reviews-section p-4">
+                        @if (Model.Reviews.Any())
+                        {
+                            @foreach (var review in Model.Reviews)
+                            {
+                                <div class="review-item border-bottom pb-3 mb-3">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="fw-bold mb-1">@review.User.FullName</h6>
+                                            <div class="rating mb-2">
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    <i class="fas fa-star @(i <= review.Rating ? "text-warning" : "text-muted")"></i>
+                                                }
+                                            </div>
+                                            @if (!string.IsNullOrEmpty(review.Comment))
+                                            {
+                                                <p class="mb-0">@review.Comment</p>
+                                            }
+                                        </div>
+                                        <small class="text-muted">@review.CreatedAt.ToString("MMM dd, yyyy")</small>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="text-center py-4">
+                                <i class="fas fa-star fa-3x text-muted mb-3"></i>
+                                <h5>No reviews yet</h5>
+                                <p class="text-muted">Be the first to review this product!</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Details Tab -->
+                <div class="tab-pane fade" id="details" role="tabpanel">
+                    <div class="details-section p-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="fw-bold">Product Specifications</h6>
+                                <ul class="list-unstyled">
+                                    <li><strong>Category:</strong> @Model.Product.Category.Name</li>
+                                    @if (!string.IsNullOrEmpty(Model.Product.Brand))
+                                    {
+                                        <li><strong>Brand:</strong> @Model.Product.Brand</li>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.Product.Material))
+                                    {
+                                        <li><strong>Material:</strong> @Model.Product.Material</li>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.Product.Size))
+                                    {
+                                        <li><strong>Size:</strong> @Model.Product.Size</li>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.Product.Color))
+                                    {
+                                        <li><strong>Color:</strong> @Model.Product.Color</li>
+                                    }
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="fw-bold">Care Instructions</h6>
+                                <ul class="list-unstyled">
+                                    <li>• Dry clean recommended</li>
+                                    <li>• Iron on low heat</li>
+                                    <li>• Store in cool, dry place</li>
+                                    <li>• Avoid direct sunlight</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    @if (Model.RelatedProducts.Any())
+    {
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="fw-bold mb-4">Related Products</h3>
+                <div class="row g-4">
+                    @foreach (var relatedProduct in Model.RelatedProducts)
+                    {
+                        <div class="col-lg-3 col-md-6">
+                            <div class="product-card card border-0 shadow-sm h-100">
+                                <div class="product-image">
+                                    <img src="@(relatedProduct.ImageUrl ?? "https://via.placeholder.com/300x300/d4af37/000000?text=" + Uri.EscapeDataString(relatedProduct.Name))" 
+                                         class="card-img-top" alt="@relatedProduct.Name" style="height: 200px; object-fit: cover;">
+                                    <div class="product-overlay">
+                                        <a href="@Url.Action("Details", "Product", new { id = relatedProduct.Id })" 
+                                           class="btn btn-gold btn-sm">
+                                            <i class="fas fa-eye me-1"></i>View Details
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title fw-bold">@relatedProduct.Name</h6>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="h6 text-gold fw-bold mb-0">৳@relatedProduct.Price.ToString("N0")</span>
+                                        @if (relatedProduct.ReviewCount > 0)
+                                        {
+                                            <div class="rating">
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    <i class="fas fa-star @(i <= relatedProduct.AverageRating ? "text-warning" : "text-muted")"></i>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="~/js/cart.js"></script>
+    <script>
+        function increaseQuantity() {
+            const input = document.getElementById('productQuantity');
+            const max = parseInt(input.getAttribute('max'));
+            const current = parseInt(input.value);
+            if (current < max) {
+                input.value = current + 1;
+            }
+        }
+
+        function decreaseQuantity() {
+            const input = document.getElementById('productQuantity');
+            const current = parseInt(input.value);
+            if (current > 1) {
+                input.value = current - 1;
+            }
+        }
+
+        // Override add to cart to include quantity
+        document.addEventListener('DOMContentLoaded', function() {
+            const addToCartBtn = document.querySelector('.add-to-cart-btn');
+            if (addToCartBtn) {
+                addToCartBtn.addEventListener('click', function() {
+                    const quantity = parseInt(document.getElementById('productQuantity').value);
+                    const productId = this.getAttribute('data-product-id');
+                    addToCart(productId, quantity);
+                });
+            }
+        });
+    </script>
+}

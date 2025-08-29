@@ -1,0 +1,91 @@
+@model Illiyeen.Models.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-dark text-gold text-center py-4">
+                    <h3 class="mb-0">
+                        <i class="fas fa-gem me-2"></i>ILLIYEEN
+                    </h3>
+                    <p class="mb-0 small">Premium Bengali Fashion</p>
+                </div>
+                <div class="card-body p-5">
+                    <h4 class="text-center mb-4">Welcome Back</h4>
+                    
+                    <form asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label fw-bold">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                <input asp-for="Email" class="form-control" placeholder="Enter your email">
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label fw-bold">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input asp-for="Password" class="form-control" placeholder="Enter your password">
+                            </div>
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input asp-for="RememberMe" class="form-check-input">
+                            <label asp-for="RememberMe" class="form-check-label">
+                                Remember me
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-gold w-100 py-2 fw-bold">
+                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                        </button>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="text-center">
+                        <p class="mb-2">Don't have an account?</p>
+                        <a asp-action="Register" class="btn btn-outline-gold">
+                            <i class="fas fa-user-plus me-2"></i>Create Account
+                        </a>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <a href="#" class="text-decoration-none text-muted small">
+                            Forgot your password?
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Demo Accounts Info -->
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">Demo Accounts</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="small mb-1"><strong>Admin:</strong></p>
+                            <p class="small text-muted mb-2">admin@illiyeen.com / admin123</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="small mb-1"><strong>Customer:</strong></p>
+                            <p class="small text-muted mb-2">customer@illiyeen.com / customer123</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

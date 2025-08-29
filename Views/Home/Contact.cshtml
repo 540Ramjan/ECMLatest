@@ -1,0 +1,279 @@
+@{
+    ViewData["Title"] = "Contact Us";
+}
+
+<div class="container my-5">
+    <!-- Header -->
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h1 class="display-4 fw-bold mb-3">Contact <span class="text-gold">ILLIYEEN</span></h1>
+            <p class="lead text-muted">
+                We'd love to hear from you. Get in touch with our team for any questions or support.
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Contact Information -->
+        <div class="col-lg-4 mb-5">
+            <div class="contact-info">
+                <h3 class="fw-bold mb-4">Get in Touch</h3>
+                
+                <div class="contact-item mb-4">
+                    <div class="d-flex align-items-start">
+                        <div class="contact-icon me-3">
+                            <i class="fas fa-map-marker-alt fa-2x text-gold"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold">Address</h5>
+                            <p class="text-muted mb-0">
+                                ILLIYEEN Headquarters<br>
+                                Dhanmondi, Dhaka 1205<br>
+                                Bangladesh
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-item mb-4">
+                    <div class="d-flex align-items-start">
+                        <div class="contact-icon me-3">
+                            <i class="fas fa-phone fa-2x text-gold"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold">Phone</h5>
+                            <p class="text-muted mb-0">
+                                +880 1700-000000<br>
+                                +880 2-9876543
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-item mb-4">
+                    <div class="d-flex align-items-start">
+                        <div class="contact-icon me-3">
+                            <i class="fas fa-envelope fa-2x text-gold"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold">Email</h5>
+                            <p class="text-muted mb-0">
+                                info@illiyeen.com<br>
+                                support@illiyeen.com
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="d-flex align-items-start">
+                        <div class="contact-icon me-3">
+                            <i class="fas fa-clock fa-2x text-gold"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold">Business Hours</h5>
+                            <p class="text-muted mb-1">Monday - Friday: 9:00 AM - 8:00 PM</p>
+                            <p class="text-muted mb-1">Saturday: 10:00 AM - 6:00 PM</p>
+                            <p class="text-muted mb-0">Sunday: 12:00 PM - 5:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow">
+                <div class="card-header bg-dark text-gold">
+                    <h4 class="mb-0">Send us a Message</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form id="contactForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">First Name</label>
+                                <input type="text" class="form-control" name="firstName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Last Name</label>
+                                <input type="text" class="form-control" name="lastName" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Email</label>
+                                <input type="email" class="form-control" name="email" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Phone</label>
+                                <input type="tel" class="form-control" name="phone">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Subject</label>
+                            <select class="form-select" name="subject" required>
+                                <option value="">Select a subject</option>
+                                <option value="General Inquiry">General Inquiry</option>
+                                <option value="Product Question">Product Question</option>
+                                <option value="Order Support">Order Support</option>
+                                <option value="Shipping & Returns">Shipping & Returns</option>
+                                <option value="Partnership">Partnership Opportunity</option>
+                                <option value="Feedback">Feedback</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Message</label>
+                            <textarea class="form-control" name="message" rows="6" placeholder="Please provide details about your inquiry..." required></textarea>
+                        </div>
+                        
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="newsletter" name="newsletter">
+                            <label class="form-check-label" for="newsletter">
+                                I would like to receive updates about new products and offers
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-gold btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i>Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h2 class="fw-bold text-center mb-5">Frequently Asked Questions</h2>
+        </div>
+        <div class="col-lg-6">
+            <div class="accordion" id="faqAccordion1">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            How can I track my order?
+                        </button>
+                    </h2>
+                    <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion1">
+                        <div class="accordion-body">
+                            You can track your order by logging into your account and visiting the "My Orders" section. 
+                            You'll also receive email updates with tracking information once your order ships.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                            What is your return policy?
+                        </button>
+                    </h2>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion1">
+                        <div class="accordion-body">
+                            We offer a 30-day return policy for unworn items in original condition. 
+                            Please contact our customer service team to initiate a return.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                            Do you ship internationally?
+                        </button>
+                    </h2>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion1">
+                        <div class="accordion-body">
+                            Currently, we ship within Bangladesh. We're working on expanding our international 
+                            shipping options. Please contact us for specific international shipping inquiries.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="accordion" id="faqAccordion2">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                            What payment methods do you accept?
+                        </button>
+                    </h2>
+                    <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion2">
+                        <div class="accordion-body">
+                            We accept bKash, Nagad, and Cash on Delivery. All online payments are processed 
+                            securely through our trusted payment partners.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                            How do I know my size?
+                        </button>
+                    </h2>
+                    <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion2">
+                        <div class="accordion-body">
+                            Each product page includes detailed size information. You can also contact our 
+                            customer service team for personalized size recommendations.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">
+                            Can I cancel my order?
+                        </button>
+                    </h2>
+                    <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion2">
+                        <div class="accordion-body">
+                            Orders can be cancelled within 2 hours of placement. After that, please contact 
+                            our customer service team for assistance.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Social Media -->
+    <div class="row mt-5">
+        <div class="col-12 text-center">
+            <h3 class="fw-bold mb-4">Follow Us</h3>
+            <div class="social-links">
+                <a href="#" class="btn btn-outline-gold btn-lg me-3 mb-2">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="btn btn-outline-gold btn-lg me-3 mb-2">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="btn btn-outline-gold btn-lg me-3 mb-2">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="btn btn-outline-gold btn-lg me-3 mb-2">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="#" class="btn btn-outline-gold btn-lg mb-2">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show success message
+            alert('Thank you for your message! We will get back to you within 24 hours.');
+            
+            // Reset form
+            this.reset();
+        });
+    </script>
+}

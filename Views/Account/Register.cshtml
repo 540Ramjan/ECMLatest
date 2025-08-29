@@ -1,0 +1,111 @@
+@model Illiyeen.Models.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-dark text-gold text-center py-4">
+                    <h3 class="mb-0">
+                        <i class="fas fa-gem me-2"></i>ILLIYEEN
+                    </h3>
+                    <p class="mb-0 small">Premium Bengali Fashion</p>
+                </div>
+                <div class="card-body p-5">
+                    <h4 class="text-center mb-4">Create Your Account</h4>
+                    
+                    <form asp-action="Register" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="FirstName" class="form-label fw-bold">First Name</label>
+                                <input asp-for="FirstName" class="form-control" placeholder="Enter first name">
+                                <span asp-validation-for="FirstName" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="LastName" class="form-label fw-bold">Last Name</label>
+                                <input asp-for="LastName" class="form-control" placeholder="Enter last name">
+                                <span asp-validation-for="LastName" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label fw-bold">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                <input asp-for="Email" class="form-control" placeholder="Enter your email">
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="PhoneNumber" class="form-label fw-bold">Phone Number</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                <input asp-for="PhoneNumber" class="form-control" placeholder="Enter phone number">
+                            </div>
+                            <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Address" class="form-label fw-bold">Address (Optional)</label>
+                            <textarea asp-for="Address" class="form-control" rows="2" placeholder="Enter your address"></textarea>
+                            <span asp-validation-for="Address" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                <label asp-for="City" class="form-label fw-bold">City (Optional)</label>
+                                <input asp-for="City" class="form-control" placeholder="Enter city">
+                                <span asp-validation-for="City" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="PostalCode" class="form-label fw-bold">Postal Code</label>
+                                <input asp-for="PostalCode" class="form-control" placeholder="Postal code">
+                                <span asp-validation-for="PostalCode" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label fw-bold">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input asp-for="Password" class="form-control" placeholder="Create a password">
+                            </div>
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label asp-for="ConfirmPassword" class="form-label fw-bold">Confirm Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirm your password">
+                            </div>
+                            <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-gold w-100 py-2 fw-bold">
+                            <i class="fas fa-user-plus me-2"></i>Create Account
+                        </button>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="text-center">
+                        <p class="mb-2">Already have an account?</p>
+                        <a asp-action="Login" class="btn btn-outline-gold">
+                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,226 @@
+@model Illiyeen.Models.ViewModels.CartViewModel
+@{
+    ViewData["Title"] = "Shopping Cart";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="fw-bold mb-4">
+                <i class="fas fa-shopping-cart me-2"></i>Shopping Cart
+            </h2>
+        </div>
+    </div>
+
+    @if (Model.CartItems.Any())
+    {
+        <div class="row">
+            <!-- Cart Items -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-0">
+                        @foreach (var item in Model.CartItems)
+                        {
+                            <div class="cart-item border-bottom p-4" data-item-id="@item.Id">
+                                <div class="row align-items-center">
+                                    <div class="col-md-2">
+                                        <img src="@(item.Product.ImageUrl ?? "https://via.placeholder.com/100x100/d4af37/000000?text=" + Uri.EscapeDataString(item.Product.Name))" 
+                                             class="img-fluid rounded" alt="@item.Product.Name" style="height: 80px; object-fit: cover;">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h6 class="fw-bold mb-1">
+                                            <a href="@Url.Action("Details", "Product", new { id = item.Product.Id })" 
+                                               class="text-decoration-none text-dark">
+                                                @item.Product.Name
+                                            </a>
+                                        </h6>
+                                        <p class="text-muted small mb-0">@item.Product.Category.Name</p>
+                                        @if (!string.IsNullOrEmpty(item.Product.Size))
+                                        {
+                                            <p class="text-muted small mb-0">Size: @item.Product.Size</p>
+                                        }
+                                        @if (!string.IsNullOrEmpty(item.Product.Color))
+                                        {
+                                            <p class="text-muted small mb-0">Color: @item.Product.Color</p>
+                                        }
+                                    </div>
+                                    <div class="col-md-2">
+                                        <span class="fw-bold text-gold">৳@item.Product.Price.ToString("N0")</span>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="quantity-controls">
+                                            <div class="input-group input-group-sm">
+                                                <button class="btn btn-outline-secondary quantity-btn" 
+                                                        type="button" onclick="updateQuantity(@item.Id, @(item.Quantity - 1))">-</button>
+                                                <input type="number" class="form-control text-center quantity-input" 
+                                                       value="@item.Quantity" min="1" max="@item.Product.Stock" 
+                                                       onchange="updateQuantity(@item.Id, this.value)">
+                                                <button class="btn btn-outline-secondary quantity-btn" 
+                                                        type="button" onclick="updateQuantity(@item.Id, @(item.Quantity + 1))">+</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <span class="fw-bold item-total">৳@item.TotalPrice.ToString("N0")</span>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button class="btn btn-outline-danger btn-sm" 
+                                                onclick="removeFromCart(@item.Id)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Continue Shopping -->
+                <div class="mt-3">
+                    <a href="@Url.Action("Index", "Product")" class="btn btn-outline-gold">
+                        <i class="fas fa-arrow-left me-2"></i>Continue Shopping
+                    </a>
+                </div>
+            </div>
+
+            <!-- Cart Summary -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-dark text-gold">
+                        <h5 class="mb-0">Order Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal (@Model.TotalItems items)</span>
+                            <span id="cart-subtotal">৳@Model.TotalAmount.ToString("N0")</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Shipping</span>
+                            <span class="text-success">
+                                @if (Model.TotalAmount >= 5000)
+                                {
+                                    <span>Free</span>
+                                }
+                                else
+                                {
+                                    <span>৳100</span>
+                                }
+                            </span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between fw-bold h5">
+                            <span>Total</span>
+                            <span class="text-gold" id="cart-total">
+                                ৳@((Model.TotalAmount >= 5000 ? Model.TotalAmount : Model.TotalAmount + 100).ToString("N0"))
+                            </span>
+                        </div>
+                        
+                        @if (Model.TotalAmount < 5000)
+                        {
+                            <div class="alert alert-info small mt-3">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Add ৳@((5000 - Model.TotalAmount).ToString("N0")) more for free shipping!
+                            </div>
+                        }
+
+                        <a href="@Url.Action("Checkout", "Cart")" class="btn btn-gold w-100 mt-3">
+                            <i class="fas fa-credit-card me-2"></i>Proceed to Checkout
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Payment Methods -->
+                <div class="card border-0 shadow-sm mt-3">
+                    <div class="card-body text-center">
+                        <h6 class="fw-bold mb-3">We Accept</h6>
+                        <div class="payment-methods">
+                            <img src="https://via.placeholder.com/80x40/ff6b35/FFFFFF?text=bKash" class="me-2 mb-2" alt="bKash">
+                            <img src="https://via.placeholder.com/80x40/f15a24/FFFFFF?text=Nagad" class="me-2 mb-2" alt="Nagad">
+                            <img src="https://via.placeholder.com/80x40/000000/FFFFFF?text=COD" class="me-2 mb-2" alt="Cash on Delivery">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Empty Cart -->
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-shopping-cart fa-4x text-muted mb-4"></i>
+                    <h3>Your cart is empty</h3>
+                    <p class="text-muted mb-4">Looks like you haven't added any items to your cart yet.</p>
+                    <a href="@Url.Action("Index", "Product")" class="btn btn-gold">
+                        <i class="fas fa-shopping-bag me-2"></i>Start Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function updateQuantity(itemId, quantity) {
+            if (quantity < 1) {
+                removeFromCart(itemId);
+                return;
+            }
+
+            fetch('/cart/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                },
+                body: JSON.stringify({
+                    id: itemId,
+                    quantity: quantity
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload(); // Reload to update totals
+                } else {
+                    alert('Failed to update quantity');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred');
+            });
+        }
+
+        function removeFromCart(itemId) {
+            if (!confirm('Are you sure you want to remove this item?')) {
+                return;
+            }
+
+            fetch('/cart/remove', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                },
+                body: JSON.stringify({
+                    id: itemId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Failed to remove item');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred');
+            });
+        }
+    </script>
+}

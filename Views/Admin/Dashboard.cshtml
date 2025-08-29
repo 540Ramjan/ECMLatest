@@ -1,0 +1,276 @@
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var totalProducts = ViewBag.TotalProducts;
+    var totalOrders = ViewBag.TotalOrders;
+    var totalUsers = ViewBag.TotalUsers;
+    var totalRevenue = ViewBag.TotalRevenue;
+    var recentOrders = ViewBag.RecentOrders as IEnumerable<Illiyeen.Models.Order>;
+}
+
+<div class="dashboard-header mb-4">
+    <h1 class="fw-bold">Dashboard</h1>
+    <p class="text-muted">Welcome to ILLIYEEN Admin Panel</p>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-gradient-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="h2 fw-bold mb-0">@totalProducts</div>
+                        <div>Total Products</div>
+                    </div>
+                    <div class="fa-3x">
+                        <i class="fas fa-box"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-gradient-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="h2 fw-bold mb-0">@totalOrders</div>
+                        <div>Total Orders</div>
+                    </div>
+                    <div class="fa-3x">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-gradient-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="h2 fw-bold mb-0">@totalUsers</div>
+                        <div>Total Users</div>
+                    </div>
+                    <div class="fa-3x">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-gradient-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="h2 fw-bold mb-0">৳@totalRevenue.ToString("N0")</div>
+                        <div>Total Revenue</div>
+                    </div>
+                    <div class="fa-3x">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Orders -->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-gold">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>Recent Orders
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                @if (recentOrders != null && recentOrders.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var order in recentOrders)
+                                {
+                                    <tr>
+                                        <td>
+                                            <strong>#@order.Id.ToString("D6")</strong>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <strong>@order.User.FullName</strong>
+                                                <small class="text-muted d-block">@order.User.Email</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <strong class="text-gold">৳@order.TotalAmount.ToString("N0")</strong>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-@GetStatusColor(order.Status)">@order.Status</span>
+                                        </td>
+                                        <td>
+                                            @order.CreatedAt.ToString("MMM dd, yyyy")
+                                            <small class="text-muted d-block">@order.CreatedAt.ToString("hh:mm tt")</small>
+                                        </td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                    Actions
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#" onclick="updateOrderStatus(@order.Id, 'Confirmed')">Mark as Confirmed</a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="updateOrderStatus(@order.Id, 'Processing')">Mark as Processing</a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="updateOrderStatus(@order.Id, 'Shipped')">Mark as Shipped</a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="updateOrderStatus(@order.Id, 'Delivered')">Mark as Delivered</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item text-danger" href="#" onclick="updateOrderStatus(@order.Id, 'Cancelled')">Cancel Order</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                        <h5>No orders yet</h5>
+                        <p class="text-muted">Orders will appear here when customers start purchasing.</p>
+                    </div>
+                }
+            </div>
+            <div class="card-footer">
+                <a href="@Url.Action("Orders", "Admin")" class="btn btn-gold">
+                    View All Orders
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <!-- Quick Actions -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-dark text-gold">
+                <h5 class="mb-0">
+                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="@Url.Action("Products", "Admin")" class="btn btn-outline-primary">
+                        <i class="fas fa-plus me-2"></i>Add New Product
+                    </a>
+                    <a href="@Url.Action("Orders", "Admin")" class="btn btn-outline-success">
+                        <i class="fas fa-list me-2"></i>Manage Orders
+                    </a>
+                    <a href="@Url.Action("Users", "Admin")" class="btn btn-outline-info">
+                        <i class="fas fa-users me-2"></i>View Users
+                    </a>
+                    <a href="@Url.Action("Index", "Home")" target="_blank" class="btn btn-outline-secondary">
+                        <i class="fas fa-external-link-alt me-2"></i>View Website
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Status -->
+        <div class="card shadow">
+            <div class="card-header bg-dark text-gold">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>System Status
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Server Status</span>
+                        <span class="badge bg-success">Online</span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Database</span>
+                        <span class="badge bg-success">Connected</span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Payment Gateway</span>
+                        <span class="badge bg-success">Active</span>
+                    </div>
+                </div>
+                <div class="mb-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>Email Service</span>
+                        <span class="badge bg-success">Active</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetStatusColor(string status)
+    {
+        return status switch
+        {
+            "Pending" => "warning",
+            "Confirmed" => "info",
+            "Processing" => "primary",
+            "Shipped" => "secondary",
+            "Delivered" => "success",
+            "Cancelled" => "danger",
+            _ => "secondary"
+        };
+    }
+}
+
+@section Scripts {
+    <script>
+        function updateOrderStatus(orderId, status) {
+            if (!confirm(`Are you sure you want to change order status to ${status}?`)) {
+                return;
+            }
+
+            fetch('/admin/updateorderstatus', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                },
+                body: JSON.stringify({
+                    orderId: orderId,
+                    status: status
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Failed to update order status');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred');
+            });
+        }
+    </script>
+}

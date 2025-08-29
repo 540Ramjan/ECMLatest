@@ -1,0 +1,187 @@
+@model Illiyeen.Models.ViewModels.CheckoutViewModel
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="fw-bold mb-4">
+                <i class="fas fa-credit-card me-2"></i>Checkout
+            </h2>
+        </div>
+    </div>
+
+    <form asp-action="PlaceOrder" method="post" id="checkoutForm">
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <!-- Shipping Information -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-dark text-gold">
+                        <h5 class="mb-0">
+                            <i class="fas fa-shipping-fast me-2"></i>Shipping Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label fw-bold">Shipping Address</label>
+                                <textarea asp-for="ShippingAddress" class="form-control" rows="3" placeholder="Enter your complete shipping address" required></textarea>
+                                <span asp-validation-for="ShippingAddress" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-8 mb-3">
+                                <label class="form-label fw-bold">City</label>
+                                <input asp-for="ShippingCity" class="form-control" placeholder="Enter city" required>
+                                <span asp-validation-for="ShippingCity" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">Postal Code</label>
+                                <input asp-for="ShippingPostalCode" class="form-control" placeholder="Enter postal code" required>
+                                <span asp-validation-for="ShippingPostalCode" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label fw-bold">Phone Number</label>
+                                <input asp-for="PhoneNumber" class="form-control" placeholder="Enter phone number for delivery" required>
+                                <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label fw-bold">Order Notes (Optional)</label>
+                                <textarea asp-for="Notes" class="form-control" rows="2" placeholder="Any special instructions for delivery"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Method -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-dark text-gold">
+                        <h5 class="mb-0">
+                            <i class="fas fa-credit-card me-2"></i>Payment Method
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="payment-methods">
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="radio" name="PaymentMethod" value="bKash" id="bkash" required>
+                                <label class="form-check-label d-flex align-items-center" for="bkash">
+                                    <img src="https://via.placeholder.com/60x30/ff6b35/FFFFFF?text=bKash" class="me-3" alt="bKash">
+                                    <div>
+                                        <strong>bKash</strong>
+                                        <small class="text-muted d-block">Pay securely with bKash mobile wallet</small>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="radio" name="PaymentMethod" value="Nagad" id="nagad" required>
+                                <label class="form-check-label d-flex align-items-center" for="nagad">
+                                    <img src="https://via.placeholder.com/60x30/f15a24/FFFFFF?text=Nagad" class="me-3" alt="Nagad">
+                                    <div>
+                                        <strong>Nagad</strong>
+                                        <small class="text-muted d-block">Pay securely with Nagad mobile wallet</small>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="radio" name="PaymentMethod" value="Cash on Delivery" id="cod" required>
+                                <label class="form-check-label d-flex align-items-center" for="cod">
+                                    <img src="https://via.placeholder.com/60x30/28a745/FFFFFF?text=COD" class="me-3" alt="Cash on Delivery">
+                                    <div>
+                                        <strong>Cash on Delivery</strong>
+                                        <small class="text-muted d-block">Pay when you receive your order</small>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-dark text-gold">
+                        <h5 class="mb-0">Order Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Cart Items -->
+                        <div class="order-items mb-3">
+                            @foreach (var item in Model.CartItems)
+                            {
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div class="d-flex align-items-center">
+                                        <img src="@(item.Product.ImageUrl ?? "https://via.placeholder.com/40x40/d4af37/000000?text=" + Uri.EscapeDataString(item.Product.Name))" 
+                                             class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;" alt="@item.Product.Name">
+                                        <div>
+                                            <small class="fw-bold">@item.Product.Name</small>
+                                            <small class="text-muted d-block">Qty: @item.Quantity</small>
+                                        </div>
+                                    </div>
+                                    <small class="fw-bold">৳@item.TotalPrice.ToString("N0")</small>
+                                </div>
+                            }
+                        </div>
+
+                        <hr>
+
+                        <!-- Price Breakdown -->
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal</span>
+                            <span>৳@Model.TotalAmount.ToString("N0")</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Shipping</span>
+                            <span class="text-success">
+                                @if (Model.TotalAmount >= 5000)
+                                {
+                                    <span>Free</span>
+                                }
+                                else
+                                {
+                                    <span>৳100</span>
+                                }
+                            </span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between fw-bold h5">
+                            <span>Total</span>
+                            <span class="text-gold">
+                                ৳@((Model.TotalAmount >= 5000 ? Model.TotalAmount : Model.TotalAmount + 100).ToString("N0"))
+                            </span>
+                        </div>
+
+                        <!-- Place Order Button -->
+                        <button type="submit" class="btn btn-gold w-100 mt-3 btn-lg" id="placeOrderBtn">
+                            <i class="fas fa-lock me-2"></i>Place Order
+                        </button>
+
+                        <!-- Security Notice -->
+                        <div class="mt-3 text-center">
+                            <small class="text-muted">
+                                <i class="fas fa-shield-alt me-1"></i>
+                                Your payment information is secure and encrypted
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Return to Cart -->
+                <div class="mt-3">
+                    <a href="@Url.Action("Index", "Cart")" class="btn btn-outline-gold w-100">
+                        <i class="fas fa-arrow-left me-2"></i>Return to Cart
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+            const btn = document.getElementById('placeOrderBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+        });
+    </script>
+}
